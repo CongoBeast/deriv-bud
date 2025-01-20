@@ -1,0 +1,22 @@
+.yesterday-card {
+    background-color: #b5b5b5; /* Light grey */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Drop shadow */
+  }
+
+  /* Custom scrollbar for Card.Body */
+.card-body::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+.card-body::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the track */
+}
+
+.card-body::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar */
+  border-radius: 4px; /* Rounded corners */
+}
+
+.card-body::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the scrollbar on hover */
+}
