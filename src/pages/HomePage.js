@@ -1,25 +1,66 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
+import { toast, ToastContainer } from "react-toastify";
 import Sidebar from "../components/sidebar";
 import TradesCard from "../components/TradesCard";
 import NewTradeModal from "../components/NewTradeModal";
 import NoteMistakeModal from "../components/NoteMistakeModal";
 import '../components/TradesCard.css';
+import EditTradeModal from "../components/EditTradeModal";
 
 const HomePage = () => {
   const [showNewTrade, setShowNewTrade] = useState(false);
   const [showNoteMistake, setShowNoteMistake] = useState(false);
+  const [todayTrades, setTodayTrades] = useState([]);
+  const [yesterdayTrades, setYesterdayTrades] = useState([]);
+  const [dayBeforeTrades, setDayBeforeTrades] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const todayTrades = [
-    { name: "Boom 1k", date: "24 Dec 2024 20:30", amount: "$40", status: "Active" , type: "buy"},
-    { name: "Boom 500", date: "24 Dec 2024 19:33", amount: "-$34", status: "Loss" , type: "buy"},
-    { name: "Crash 500", date: "24 Dec 2024 19:33", amount: "+$53", status: "Profit" , type: "sell"},
-  ];
+  const [showEditTradeModal, setShowEditTradeModal] = useState(false);
+  const [selectedTrade, setSelectedTrade] = useState(null);
 
-  const yesterdayTrades = [
-    { name: "Boom 1k", date: "23 Dec 2024 20:30", amount: "$40", status: "Active" , type: "buy"},
-    { name: "Boom 500", date: "23 Dec 2024 19:33", amount: "-$34", status: "Loss" , type: "buy"},
-    { name: "Crash 500", date: "23 Dec 2024 19:33", amount: "+$53", status: "Profit" , type: "sell"},
-  ];
+    // Function to handle editing a trade
+  const handleEditTrade = (trade) => {
+      setSelectedTrade(trade); // Set the selected trade
+      setShowEditTradeModal(true); // Show the modal
+    };
+  
+    // Function to close the modal
+  const handleCloseEditTradeModal = () => {
+      setShowEditTradeModal(false);
+      setSelectedTrade(null); // Reset the selected trade
+    };
+
+
+    // Function to fetch trades from the backend
+    const fetchTrades = async (filter) => {
+      try {
+        const response = await fetch(`http://localhost:3005/trades?filter=${filter}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch trades");
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Error fetching trades:", error);
+        return [];
+      }
+    };
+  
+    // Fetch trades for all filters when the component mounts
+    useEffect(() => {
+      const loadTrades = async () => {
+        setLoading(true);
+        const today = await fetchTrades("today");
+        const yesterday = await fetchTrades("yesterday");
+        const dayBefore = await fetchTrades("dayBefore");
+        setTodayTrades(today);
+        setYesterdayTrades(yesterday);
+        setDayBeforeTrades(dayBefore);
+        setLoading(false);
+      };
+  
+      loadTrades();
+    }, []);
 
   return (
     <div className="d-flex">
@@ -36,23 +77,38 @@ const HomePage = () => {
           </button>
         </div>
       </div>
-        {/* <TradesCard title="Today's Trades" trades={todayTrades} />
-        <TradesCard title="Yesterday's Trades" trades={yesterdayTrades} /> */}
-        <div className="mt-4">
+
+        {loading ? (
+          <p>Loading trades...</p>
+        ) : (
+          <div className="mt-4">
             <div className="row">
-                <div className="col-md-4">
-                    <TradesCard title="Today's Trades" trades={todayTrades} />
-                </div>
-                <div className="col-md-4 ">
-                    <TradesCard title="Yesterday's Trades" trades={yesterdayTrades} classText={"yesterday-card"} customClass="yesterday-card" />
-                </div>
-                <div className="col-md-4 ">
-                    <TradesCard title="2 days ago's Trades" trades={yesterdayTrades} classText={"yesterday-card"} customClass="yesterday-card" />
-                </div>
+              <div className="col-md-4">
+                <TradesCard title="Today's Trades" trades={todayTrades} onEditTrade={handleEditTrade} />
+              </div>
+              <div className="col-md-4">
+                <TradesCard title="Yesterday's Trades" trades={yesterdayTrades} customClass="yesterday-card" onEditTrade={handleEditTrade}/>
+              </div>
+              <div className="col-md-4">
+                <TradesCard title="2 Days Ago's Trades" trades={dayBeforeTrades} customClass="yesterday-card" onEditTrade={handleEditTrade} />
+              </div>
             </div>
-        </div>
+          </div>
+        )}
+
+
+
+
         <NewTradeModal show={showNewTrade} handleClose={() => setShowNewTrade(false)} />
         <NoteMistakeModal show={showNoteMistake} handleClose={() => setShowNoteMistake(false)} />
+
+
+        <EditTradeModal
+          show={showEditTradeModal}
+          handleClose={handleCloseEditTradeModal}
+          trade={selectedTrade} // Pass the selected trade
+        />
+
       </div>
     </div>
 

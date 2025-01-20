@@ -28,13 +28,6 @@ const TradesTable = () => {
   const [trades, setTrades] = useState([]);
   const [dateFilter, setDateFilter] = useState(''); // State to manage the filter
 
-  // const trades = [
-  //   { name: "Trade 1", symbol: "AAPL", type: "buy", date: "2025-01-01", status: "Profit", amount: 100 },
-  //   { name: "Trade 2", symbol: "TSLA", type: "sell", date: "2025-01-02", status: "Loss", amount: 200 },
-  //   { name: "Trade 3", symbol: "GOOGL", type: "buy", date: "2025-01-03", status: "Profit", amount: 150 },
-  //   { name: "Trade 4", symbol: "MSFT", type: "sell", date: "2025-01-04", status: "Neutral", amount: 250 },
-  // ];
-
   const loadTrades = async () => {
     try {
       const data = await fetchTrades(filter);
