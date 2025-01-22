@@ -19,6 +19,8 @@ const EditTradeModal = ({ show, handleClose, trade }) => {
     // Handle form submission
     const handleSubmit = async () => {
       setSubmitting(true); // Start loading
+
+      console.log(trade)
   
       try {
         // Send a PUT request to update the trade
@@ -97,17 +99,7 @@ const EditTradeModal = ({ show, handleClose, trade }) => {
         </Modal>
   
         {/* Toast Container for Notifications */}
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+        <ToastContainer/>
       </>
     );
   };

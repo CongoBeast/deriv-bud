@@ -159,6 +159,7 @@ const NewTradeModal = ({ show, handleClose }) => {
     positions: "",
     date: new Date().toISOString().slice(0, 16), // Default to current date and time
     status: "Pending", // Automatically set to "Pending"
+    outcome: 0
   });
 
   const [loading, setLoading] = useState(false); // Loading state
@@ -299,17 +300,7 @@ const NewTradeModal = ({ show, handleClose }) => {
       </Modal>
 
       {/* Toast Container for Notifications */}
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer />
     </>
   );
 };

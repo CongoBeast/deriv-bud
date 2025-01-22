@@ -1,5 +1,5 @@
 import React , { useState } from "react";
-import { Card,  Row, Col, Button } from "react-bootstrap";
+import { Card,  Row, Col, Button, Badge } from "react-bootstrap";
 import './TradesCard.css';
 import EditTradeModal from "./EditTradeModal";
 
@@ -50,12 +50,14 @@ const TradesCard = ({ title, trades , classText , onEditTrade }) => {
                         : trade.status === "Loss"
                         ? "bg-danger"
                         : trade.status === "Pending"
-                        ? "bg-secondary"
+                        ? "bg-primary"
                         : "bg-secondary" // Default fallback (optional)
                     }`}
                     >
-                        {trade.status}
+                        {trade.status} {trade.status === "Pending" ? ` ($${trade.riskAmount})` : ` $${trade.outcome}`}
                     </span>
+
+
                     </div>
                     <Button
                         variant="outline-secondary"
