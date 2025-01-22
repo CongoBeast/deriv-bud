@@ -20,44 +20,60 @@ const HomePage = () => {
 
     // Function to handle editing a trade
   const handleEditTrade = (trade) => {
+      // console.log(trade)
       setSelectedTrade(trade); // Set the selected trade
       setShowEditTradeModal(true); // Show the modal
+      loadTrades();
     };
   
     // Function to close the modal
   const handleCloseEditTradeModal = () => {
       setShowEditTradeModal(false);
       setSelectedTrade(null); // Reset the selected trade
+      loadTrades();
     };
 
 
     // Function to fetch trades from the backend
     const fetchTrades = async (filter) => {
+
       try {
         const response = await fetch(`http://localhost:3005/trades?filter=${filter}`);
         if (!response.ok) {
           throw new Error("Failed to fetch trades");
         }
         const data = await response.json();
+
         return data;
       } catch (error) {
         console.error("Error fetching trades:", error);
         return [];
       }
     };
+
+    const loadTrades = async () => {
+      setLoading(true);
+      const today = await fetchTrades("today");
+      const yesterday = await fetchTrades("yesterday");
+      const dayBefore = await fetchTrades("dayBefore");
+      setTodayTrades(today);
+      setYesterdayTrades(yesterday);
+      setDayBeforeTrades(dayBefore);
+      setLoading(false);
+    };
   
     // Fetch trades for all filters when the component mounts
     useEffect(() => {
-      const loadTrades = async () => {
-        setLoading(true);
-        const today = await fetchTrades("today");
-        const yesterday = await fetchTrades("yesterday");
-        const dayBefore = await fetchTrades("dayBefore");
-        setTodayTrades(today);
-        setYesterdayTrades(yesterday);
-        setDayBeforeTrades(dayBefore);
-        setLoading(false);
-      };
+      // const loadTrades = async () => {
+      //   setLoading(true);
+      //   const today = await fetchTrades("today");
+      //   const yesterday = await fetchTrades("yesterday");
+      //   const dayBefore = await fetchTrades("dayBefore");
+      //   setTodayTrades(today);
+      //   setYesterdayTrades(yesterday);
+      //   setDayBeforeTrades(dayBefore);
+      //   setLoading(false);
+      // };
   
       loadTrades();
     }, []);

@@ -123,7 +123,9 @@ const TradesTable = () => {
             <th>Type</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Amount</th>
+            <th>Risk Amount</th>
+            <th>Outcome</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -131,7 +133,7 @@ const TradesTable = () => {
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{trade.symbol}</td>
-              <td>{trade.type}</td>
+              <td>{trade.tradeType}</td>
               <td>{trade.date}</td>
               <td>
                 <span
@@ -140,13 +142,25 @@ const TradesTable = () => {
                       ? "bg-success"
                       : trade.status === "Loss"
                       ? "bg-danger"
+                      : trade.status === "B/E"
+                      ? "bg-primary"
                       : "bg-secondary"
                   }`}
                 >
                   {trade.status}
                 </span>
               </td>
-              <td>{trade.amount}</td>
+              <td>{trade.riskAmount}</td>
+              <td>{trade.outcome}</td>
+              <td>                    
+                <Button variant="outline-secondary" className="m-1" disabled={trade.status !== "Pending"} size="sm"  >
+                  <i className="bi bi-pencil-fill"></i>
+                </Button>
+
+                <Button variant="outline-danger" className="m-1" disabled={trade.status !== "Pending"} size="sm" >
+                  <i className="bi bi-trash-fill"></i> 
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
