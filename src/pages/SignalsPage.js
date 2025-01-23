@@ -103,6 +103,10 @@ const signals = [
   return (
     <div className="p-4">
       <h1 className="text-center mb-4">Trade Signals</h1>
+
+      <Button className="mb-3" href="\addsignals">     
+            <i className="bi bi-info-circle-fill"></i> Add Signal
+        </Button>
       <Tabs
         activeKey={activeTab}
         onSelect={(tab) => setActiveTab(tab)}
