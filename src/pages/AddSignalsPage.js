@@ -36,23 +36,32 @@ const AddSignalPage = () => {
     setError("");
 
     try {
-      // Create a FormData object to send the image file
-      const formDataToSend = new FormData();
-      formDataToSend.append("symbol", formData.symbol);
-      formDataToSend.append("entry", formData.entry);
-      formDataToSend.append("stoploss", formData.stoploss);
-      formDataToSend.append("target", formData.target);
-      formDataToSend.append("image", formData.image);
+      // Upload image to Cloudinary
+      const cloudinaryFormData = new FormData();
+      cloudinaryFormData.append("file", formData.image);
+      cloudinaryFormData.append("upload_preset", "your_upload_preset"); // Replace with your Cloudinary upload preset
 
-      // Send a POST request to the backend
-      const response = await axios.post("http://localhost:3005/signals", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const cloudinaryResponse = await axios.post(
+        "https://api.cloudinary.com/v1_1/dxxlrzouc/image/upload", // Replace with your Cloudinary cloud name
+        cloudinaryFormData
+      );
+
+      const imageUrl = cloudinaryResponse.data.secure_url;
+
+      // Prepare the trade data
+      const tradeData = {
+        symbol: formData.symbol,
+        entry: formData.entry,
+        stoploss: formData.stoploss,
+        target: formData.target,
+        image: imageUrl, // Use the Cloudinary image URL
+      };
+
+      // Send the trade data to the backend
+      const response = await axios.post("http://localhost:3005/submit-signal", tradeData);
 
       if (response.status === 201) {
-        toast.success("Signal added successfully!");
+        toast.success("Trade signal added successfully!");
         setFormData({
           symbol: "C300",
           entry: "",
@@ -62,8 +71,8 @@ const AddSignalPage = () => {
         });
       }
     } catch (error) {
-      console.error("Error adding signal:", error);
-      setError("Failed to add signal. Please try again.");
+      console.error("Error adding trade signal:", error);
+      setError("Failed to add trade signal. Please try again.");
     } finally {
       setLoading(false);
     }
