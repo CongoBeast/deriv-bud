@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Form, Button, Row, Col, InputGroup } from "react-bootstrap";
+import { Table, Form, Button, Row, Col, InputGroup, Modal  } from "react-bootstrap";
 import Sidebar from "../components/sidebar";
 import axios from 'axios';
 
@@ -28,6 +28,11 @@ const TradesTable = () => {
   const [trades, setTrades] = useState([]);
   const [dateFilter, setDateFilter] = useState(''); // State to manage the filter
 
+  const [showModal, setShowModal] = useState(false); // State to manage modal visibility
+  const [selectedTrade, setSelectedTrade] = useState(null); // State to store the selected trade for editing
+  const [status, setStatus] = useState(""); // State for the status input
+  const [outcome, setOutcome] = useState(""); // State for the outcome input
+
   const loadTrades = async () => {
     try {
       const data = await fetchTrades(filter);
@@ -47,7 +52,38 @@ const TradesTable = () => {
     return matchesSearch && matchesDate && matchesSymbol && matchesType;
   });
 
-  console.log(trades)
+    // Open the modal and set the selected trade
+  const handleEditClick = (trade) => {
+      setSelectedTrade(trade);
+      setStatus(trade.status);
+      setOutcome(trade.outcome || "");
+      setShowModal(true);
+    };
+  
+    // Close the modal
+  const handleCloseModal = () => {
+      setShowModal(false);
+      setSelectedTrade(null);
+      setStatus("");
+      setOutcome("");
+    };
+
+
+    // Handle form submission
+  const handleSaveChanges = async () => {
+      if (!selectedTrade) return;
+  
+      try {
+        await axios.put(`http://localhost:3005/edit-trade/${selectedTrade._id}`, {
+          status,
+          amount: outcome,
+        });
+        loadTrades(); // Refresh the trades after updating
+        handleCloseModal(); // Close the modal
+      } catch (error) {
+        console.error('Error updating trade:', error);
+      }
+    };
 
   useEffect(() => {
     loadTrades();
@@ -153,7 +189,7 @@ const TradesTable = () => {
               <td>{trade.riskAmount}</td>
               <td>{trade.outcome}</td>
               <td>                    
-                <Button variant="outline-secondary" className="m-1" disabled={trade.status !== "Pending"} size="sm"  >
+                <Button variant="outline-secondary" className="m-1" disabled={trade.status !== "Pending"} size="sm" onClick={() => handleEditClick(trade)}  >
                   <i className="bi bi-pencil-fill"></i>
                 </Button>
 
@@ -165,6 +201,48 @@ const TradesTable = () => {
           ))}
         </tbody>
       </Table>
+
+            {/* Edit Trade Modal */}
+     <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Trade</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Status</Form.Label>
+              <Form.Select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="Pending">Pending</option>
+                <option value="Profit">Profit</option>
+                <option value="Loss">Loss</option>
+                <option value="B/E">B/E</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Outcome</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter outcome"
+                value={outcome}
+                onChange={(e) => setOutcome(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSaveChanges}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+
     </div>
   );
 };
