@@ -2,6 +2,7 @@ import React , { useState } from "react";
 import { Card,  Row, Col, Button, Badge } from "react-bootstrap";
 import './TradesCard.css';
 import EditTradeModal from "./EditTradeModal";
+import { PiLadderSimple } from "react-icons/pi";
 
 const TradesCard = ({ title, trades , classText , onEditTrade }) => {
 
@@ -9,12 +10,22 @@ const TradesCard = ({ title, trades , classText , onEditTrade }) => {
     const classVariable = classText + " " + "mb-3 p-2 shadow-md"
 
     // console.log(classVariable)
+      // Calculate P/L for the trades
+  const calculatePL = (trades) => {
+    return trades.reduce((total, trade) => {
+      return total + (parseFloat(trade.outcome) || 0);
+    }, 0);
+  };
+
+  const pl = calculatePL(trades);
 
   return (
 
         <Card className={classVariable}>
             <Card.Body style={{ maxHeight: "700px", overflowY: "auto" }}>
                 <Card.Title><h2>{title}</h2></Card.Title>
+
+                <span>Daily P/L :  {pl} </span>
                 {trades.map((trade, index) => (
                 <Card className="p-1 mb-3">
                 <div key={index} className="d-flex justify-content-between align-items-center ">
