@@ -47,7 +47,7 @@ const NewTradeModal = ({ show, handleClose }) => {
       };
 
       // Send a POST request to the submit-trade route
-      const response = await fetch("http://localhost:3005/submit-trade", {
+      const response = await fetch("https://deriv-bud-backend.onrender.com/submit-trade", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,8 +60,18 @@ const NewTradeModal = ({ show, handleClose }) => {
       }
 
       // Handle successful submission
-      toast.success("Trade submitted successfully!"); // Show success toast
-      handleClose(); // Close the modal
+      // toast.success("Trade submitted successfully!"); // Show success toast
+
+      toast.success("Trade submitted successfully!", {
+        autoClose: 1000, // Auto-close the toast after 2 seconds
+      });
+
+
+      // handleClose(); // Close the modal
+      setTimeout(() => {
+        handleClose();
+      }, 500);
+
     } catch (error) {
       console.error("Error submitting trade:", error);
       toast.error("Failed to submit trade. Please try again."); // Show error toast
@@ -153,7 +163,7 @@ const NewTradeModal = ({ show, handleClose }) => {
       </Modal>
 
       {/* Toast Container for Notifications */}
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 };

@@ -24,7 +24,7 @@ const EditTradeModal = ({ show, handleClose, trade }) => {
   
       try {
         // Send a PUT request to update the trade
-        const response = await fetch(`http://localhost:3005/edit-trade/${trade._id}`, {
+        const response = await fetch(`https://deriv-bud-backend.onrender.com/edit-trade/${trade._id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -45,6 +45,7 @@ const EditTradeModal = ({ show, handleClose, trade }) => {
         setTimeout(() => {
           handleClose();
         }, 1500);
+
       } catch (error) {
         console.error("Error updating trade:", error);
         toast.error("Failed to update trade. Please try again.");
@@ -99,7 +100,7 @@ const EditTradeModal = ({ show, handleClose, trade }) => {
         </Modal>
   
         {/* Toast Container for Notifications */}
-        <ToastContainer/>
+        {/* <ToastContainer/> */}
       </>
     );
   };
