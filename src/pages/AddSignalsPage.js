@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Card, Alert } from "react-bootstrap";
+import { Form, Button, Card, Alert, InputGroup } from "react-bootstrap";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,7 +10,7 @@ const AddSignalPage = () => {
     entry: "",
     stoploss: "",
     target: "",
-    image: null, // Store the uploaded image file
+    image: "", // Store the image URL
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -21,14 +21,6 @@ const AddSignalPage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle image file selection
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, image: file });
-    }
-  };
-
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,29 +28,17 @@ const AddSignalPage = () => {
     setError("");
 
     try {
-      // Upload image to Cloudinary
-      const cloudinaryFormData = new FormData();
-      cloudinaryFormData.append("file", formData.image);
-      cloudinaryFormData.append("upload_preset", "your_upload_preset"); // Replace with your Cloudinary upload preset
-
-      const cloudinaryResponse = await axios.post(
-        "https://api.cloudinary.com/v1_1/dxxlrzouc/image/upload", // Replace with your Cloudinary cloud name
-        cloudinaryFormData
-      );
-
-      const imageUrl = cloudinaryResponse.data.secure_url;
-
       // Prepare the trade data
       const tradeData = {
         symbol: formData.symbol,
         entry: formData.entry,
         stoploss: formData.stoploss,
         target: formData.target,
-        image: imageUrl, // Use the Cloudinary image URL
+        image: formData.image, // Use the provided image URL
       };
 
       // Send the trade data to the backend
-      const response = await axios.post("http://localhost:3005/submit-signal", tradeData);
+      const response = await axios.post("https://deriv-bud-backend.onrender.com/submit-signal", tradeData);
 
       if (response.status === 201) {
         toast.success("Trade signal added successfully!");
@@ -67,7 +47,7 @@ const AddSignalPage = () => {
           entry: "",
           stoploss: "",
           target: "",
-          image: null,
+          image: "",
         });
       }
     } catch (error) {
@@ -141,16 +121,26 @@ const AddSignalPage = () => {
               />
             </Form.Group>
 
-            {/* Image Upload */}
+            {/* Image URL Input */}
             <Form.Group className="mb-3">
-              <Form.Label>Trade Image</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                required
-              />
-              <small className="text-muted">Upload or drag and drop an image.</small>
+              <Form.Label>Trade Image URL</Form.Label>
+              <InputGroup>
+                <Form.Control
+                  type="text"
+                  name="image"
+                  value={formData.image}
+                  onChange={handleChange}
+                  placeholder="Paste image URL"
+                  required
+                />
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => navigator.clipboard.readText().then((text) => setFormData({ ...formData, image: text }))}
+                >
+                  Paste
+                </Button>
+              </InputGroup>
+              <small className="text-muted">Paste the URL of the trade image.</small>
             </Form.Group>
 
             {/* Error Message */}

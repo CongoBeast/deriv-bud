@@ -12,22 +12,6 @@ const SignalsPage = () => {
   const [showImageModal, setShowImageModal] = useState(false); // State for image modal
   const [selectedImage, setSelectedImage] = useState(""); // State for selected image URL
 
-  // Fetch trade signals from the backend
-//   useEffect(() => {
-//     const fetchSignals = async () => {
-//       try {
-//         const response = await axios.get("http://localhost:3005/signals");
-//         setSignals(response.data);
-//       } catch (error) {
-//         console.error("Error fetching signals:", error);
-//         setError("Failed to fetch signals. Please try again later.");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchSignals();
-//   }, []);
 
 const signals = [
     {
@@ -36,7 +20,7 @@ const signals = [
       "entry": "42000",
       "stoploss": "41000",
       "date": "2023-10-25T14:30:00.000Z",
-      "imageUrl": "https://github.com/CongoBeast/deriv-bud/blob/main/src/pages/signals-pics/B1K-buy.png?raw=true" // Example image URL
+      "imageUrl": "https://charts.mql5.com/42/88/boom-500-index-m1-deriv-com-limited.png" // Example image URL
     },
     {
       "symbol": "CRASH 300",
