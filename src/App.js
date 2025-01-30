@@ -11,6 +11,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import SignalsPage from './pages/SignalsPage';
 import AddSignalPage from './pages/AddSignalsPage';
+import { toast, ToastContainer } from "react-toastify";
 
 
 function App() {
@@ -38,6 +39,9 @@ function App() {
       </div>
 
     </div>
+
+
+    <ToastContainer position="top-right" autoClose={3000} />
 
       
     </Router>
